@@ -77,3 +77,6 @@ QMT 交易机通常不能上外网，所以 **GitHub 只作审计与追溯，不
 - 技术性失败（无价/无候选/无报价/在途委托）可在同浪内重试，上限 3 次；资金与张数门拒绝不重试（v5_5 起）
 - 止盈**判定与成交同源取 ask**（卖方买回实际支付价）；ask 缺失回退 bid（v5_5 起）
 - 实盘双锁：界面选实盘 **且** `LIVE_CONFIRM = 1` 才发单
+- **参数只能写在代码里**（2026-11-22 实测三条通道全死，见 `probes/param_panel_probe_v1..v3.py`）：右侧「参数设置」面板既不为顶层变量生成同名项、也不下发手工新增行（模块入口 `globals()` 231 键里没有目标变量，`ContextInfo` 上也无同名属性）；**文件读取一律被拦**（连自己刚创建的文件也 `PermissionError: Foribdden FileIO`，只有写新建放行）⇒ 外部 JSON 参数文件不可行。参数调优走代码内 **PRESET 块**（`PRESET='P1'` 一行切换一组常量，日志打印当前 PRESET）
+- `ContextInfo.start/end` 在 `init` 读到 `'-1'`，**首根 handlebar 才有真值** ⇒ 需读区间时不能在 `init` 里读（v5_5 用代码内 `BT_START/BT_END` 二次截断，不受影响）
+- 策略运行目录 `os.getcwd()` = `D:\君弘君智交易系统\bin.x64`；`os.listdir` / `os.makedirs` / 新建写文件可用，读文件不可用
