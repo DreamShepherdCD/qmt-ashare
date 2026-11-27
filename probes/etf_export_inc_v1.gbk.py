@@ -131,7 +131,7 @@ def _export(ContextInfo):
             df = df.loc[keep]
 
             if len(df) == 0:
-                _log("EMPTY_AFTER_FILTER %s (raw=%d)" % (code, len(idx)))
+                _log("EMPTY_AFTER_FILTER %s (raw=%d)" % (code, len(stimes)))
                 report.append("%s,0,0,-,-,-" % code)
                 continue
 
